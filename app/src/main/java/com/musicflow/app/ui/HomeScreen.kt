@@ -1,5 +1,6 @@
 package com.musicflow.app.ui
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -43,7 +44,8 @@ fun HomeScreen(
     isDownloading: Boolean,
     onPlay: (Song) -> Unit,
     onDownload: (Song) -> Unit,
-    onFavorite: (Song) -> Unit
+    onFavorite: (Song) -> Unit,
+    onLyric: (Song) -> Unit
 ) {
     val keyboard = LocalSoftwareKeyboardController.current
 
@@ -52,8 +54,10 @@ fun HomeScreen(
             "MusicFlow", fontSize = 26.sp, fontWeight = FontWeight.Bold,
             color = TextPrimary, modifier = Modifier.padding(top = 10.dp, bottom = 4.dp)
         )
-        Text("探索你的音乐宇宙", color = TextSecondary, fontSize = 12.sp,
-            modifier = Modifier.padding(bottom = 14.dp))
+        Text(
+            "探索你的音乐宇宙", color = TextSecondary, fontSize = 12.sp,
+            modifier = Modifier.padding(bottom = 14.dp)
+        )
 
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             OutlinedTextField(

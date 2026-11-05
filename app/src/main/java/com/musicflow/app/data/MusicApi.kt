@@ -3,6 +3,9 @@ package com.musicflow.app.data
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
+import kotlinx.serialization.json.contentOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.util.concurrent.TimeUnit
@@ -47,6 +50,18 @@ class MusicApi(
             }
             null
         }
+
+    /** 取歌词（LRC 文本）；无歌词返回空串 */
+    suspend fun lyric(song: Song): String = withContext(Dispatchers.IO) {
+        val url = "$base?types=lyric&source=${song.source}&id=${song.id}"
+        val body = get(url) ?: return@withContext ""
+        runCatching {
+            val o = json.parseToJsonElement(body).jsonObject
+            o["lyric"]?.jsonPrimitive?.contentOrNull
+                ?: o["lrc"]?.jsonObject?.get("lyric")?.jsonPrimitive?.contentOrNull
+                ?: ""
+        }.getOrDefault("")
+    }
 
     private fun get(url: String, retries: Int = 3): String? {
         var last: Exception? = null

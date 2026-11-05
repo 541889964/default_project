@@ -9,6 +9,8 @@ class MusicRepository(private val api: MusicApi = MusicApi()) {
     suspend fun resolve(song: Song, lossless: Boolean = true): AudioUrl? =
         api.audioUrl(song, lossless)
 
+    suspend fun lyric(song: Song): String = api.lyric(song)
+
     /** 给下载用的文件名 */
     fun fileName(song: Song, ext: String): String {
         val raw = if (song.artist.isBlank()) song.name else "${song.name} - ${song.artist}"
