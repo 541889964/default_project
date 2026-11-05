@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.MusicNote
 import androidx.compose.material.icons.rounded.Tune
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
@@ -60,15 +61,35 @@ fun HomeScreen(
 
     Column(Modifier.fillMaxSize().padding(horizontal = 14.dp)) {
         Row(
-            Modifier.fillMaxWidth().padding(top = 10.dp, bottom = 4.dp),
+            Modifier.fillMaxWidth().padding(top = 14.dp, bottom = 2.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                "MusicFlow", fontSize = 26.sp, fontWeight = FontWeight.Bold,
-                color = TextPrimary, modifier = Modifier.weight(1f)
-            )
             Box(
-                Modifier.size(38.dp).clip(RoundedCornerShape(12.dp))
+                Modifier.size(44.dp).clip(RoundedCornerShape(13.dp))
+                    .background(
+                        androidx.compose.ui.graphics.Brush.linearGradient(
+                            listOf(AccentPrimary, com.musicflow.app.ui.theme.AccentSecondary)
+                        )
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    Icons.Rounded.MusicNote, null,
+                    tint = TextPrimary, modifier = Modifier.size(24.dp)
+                )
+            }
+            Column(Modifier.weight(1f).padding(start = 12.dp)) {
+                Text(
+                    "MusicFlow", fontSize = 24.sp, fontWeight = FontWeight.Bold,
+                    color = TextPrimary
+                )
+                Text(
+                    "发现你的音乐", color = TextSecondary, fontSize = 11.sp,
+                    modifier = Modifier.padding(top = 1.dp)
+                )
+            }
+            Box(
+                Modifier.size(40.dp).clip(RoundedCornerShape(12.dp))
                     .background(if (ui.eqEnabled) AccentPrimary.copy(alpha = 0.2f) else BgSurface)
                     .clickable { onToggleEq() },
                 contentAlignment = Alignment.Center
@@ -79,10 +100,6 @@ fun HomeScreen(
                 )
             }
         }
-        Text(
-            "探索你的音乐宇宙", color = TextSecondary, fontSize = 12.sp,
-            modifier = Modifier.padding(bottom = 14.dp)
-        )
 
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             OutlinedTextField(
