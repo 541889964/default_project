@@ -23,23 +23,23 @@ import com.musicflow.app.ui.theme.TextSecondary
 @Composable
 fun LibraryScreen(
     title: String,
-    items: List<HistoryEntity>,
+    records: List<HistoryEntity>,
     playState: PlaybackUiState,
     onClick: (Song) -> Unit
 ) {
     Column(Modifier.fillMaxSize().padding(horizontal = 14.dp)) {
         Text(title, fontSize = 24.sp, fontWeight = FontWeight.Bold,
             color = TextPrimary, modifier = Modifier.padding(top = 12.dp, bottom = 2.dp))
-        Text("共 ${items.size} 首", color = TextSecondary, fontSize = 12.sp,
+        Text("共 ${records.size} 首", color = TextSecondary, fontSize = 12.sp,
             modifier = Modifier.padding(bottom = 12.dp))
-        if (items.isEmpty()) {
+        if (records.isEmpty()) {
             EmptyState("这里还空着", "去搜索页找点喜欢的音乐吧")
         } else {
             LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                items(items, key = { it.rowId }) { e ->
+                items(records, key = { it.rowId }) { e ->
                     val song = Song(e.songId, e.name, e.artist, source = e.source)
                     SongRow(
-                        index = items.indexOf(e), song = song,
+                        index = records.indexOf(e), song = song,
                         playing = playState.isPlaying && playState.title == song.name,
                         resolving = false,
                         onPlay = { onClick(song) },
