@@ -7,6 +7,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -81,6 +84,7 @@ fun MusicFlowRoot(vm: HomeViewModel = viewModel()) {
     GradientBackground {
         Scaffold(
             containerColor = Color.Transparent,
+            contentWindowInsets = androidx.compose.foundation.layout.WindowInsets.safeDrawing,
             snackbarHost = { SnackbarHost(snackbar) },
             bottomBar = {
                 Column {
@@ -102,7 +106,11 @@ fun MusicFlowRoot(vm: HomeViewModel = viewModel()) {
                         }
                     )
                     Row(
-                        Modifier.fillMaxWidth().background(BgSurface).padding(vertical = 6.dp),
+                        Modifier
+                            .fillMaxWidth()
+                            .background(BgSurface)
+                            .navigationBarsPadding()
+                            .padding(vertical = 6.dp),
                         horizontalArrangement = Arrangement.SpaceEvenly,
                         verticalAlignment = Alignment.CenterVertically
                     ) {

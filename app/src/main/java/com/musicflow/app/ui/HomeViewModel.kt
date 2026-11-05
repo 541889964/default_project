@@ -94,15 +94,8 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
                 _ui.value = _ui.value.copy(message = "该曲无可用在线音频")
                 return@launch
             }
-            val list = _ui.value.songs
-            val idx = list.indexOfFirst { it.id == song.id }
-            if (idx >= 0) {
-                val queue = list.map { QueueItem("", it.name, it.artist) }.toMutableList()
-                queue[idx] = QueueItem(audio.url, song.name, song.artist)
-                player.playQueue(queue.toList(), idx)
-            } else {
-                player.play(audio.url, song.name, song.artist)
-            }
+            // 只播放当前真实解析出的 URL，避免空 URL 进 ExoPlayer 导致崩溃
+            player.play(audio.url, song.name, song.artist)
             historyStore.recordSearch(song)
         }
     }

@@ -1,5 +1,6 @@
 package com.musicflow.app.data
 
+import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
@@ -12,7 +13,7 @@ import java.util.concurrent.TimeUnit
 
 /**
  * 音乐数据源客户端。
- * 直连聚合 API，OkHttp + kotlinx.serialization，无额外网络框架依赖。
+ * 注意：search 端点直接返回 JSON 数组，不是 {total, songs} 对象。
  */
 class MusicApi(
     private val client: OkHttpClient = OkHttpClient.Builder()
@@ -21,18 +22,39 @@ class MusicApi(
         .retryOnConnectionFailure(true)
         .build()
 ) {
-    private val json = Json { ignoreUnknownKeys = true; isLenient = true }
+    private val json = Json {
+        ignoreUnknownKeys = true
+        isLenient = true
+        coerceInputValues = true
+    }
     private val base = "https://music-api.gdstudio.xyz/api.php"
 
     suspend fun search(keyword: String, source: String = "netease", count: Int = 25): List<Song> =
         withContext(Dispatchers.IO) {
             val url = "$base?types=search&source=$source&name=${enc(keyword)}&count=$count&pages=1"
-            val body = get(url) ?: return@withContext emptyList()
-            val resp = runCatching { json.decodeFromString<SearchResponse>(body) }.getOrNull()
-                ?: return@withContext emptyList()
-            resp.songs.map {
-                Song(id = it.id, name = it.name, artist = it.artists.joinToString(" / "),
-                     album = it.album, source = it.source.ifBlank { source })
+            Log.d(TAG, "search -> $url")
+            val body = get(url)
+            if (body == null) {
+                Log.e(TAG, "search body null")
+                return@withContext emptyList()
+            }
+            Log.d(TAG, "search body[${body.length}] ${body.take(120)}")
+            // API 直接返回 JSON 数组
+            val arr = runCatching {
+                json.decodeFromString<List<RawSong>>(body)
+            }.getOrElse {
+                Log.e(TAG, "search parse fail: ${it.message}; body=${body.take(200)}")
+                null
+            }
+            if (arr == null) return@withContext emptyList()
+            arr.mapNotNull {
+                if (it.id.isBlank() || it.name.isBlank()) null
+                else Song(
+                    id = it.id, name = it.name,
+                    artist = it.artists.joinToString(" / "),
+                    album = it.album,
+                    source = it.source.ifBlank { source }
+                )
             }
         }
 
@@ -51,7 +73,6 @@ class MusicApi(
             null
         }
 
-    /** 取歌词（LRC 文本）；无歌词返回空串 */
     suspend fun lyric(song: Song): String = withContext(Dispatchers.IO) {
         val url = "$base?types=lyric&source=${song.source}&id=${song.id}"
         val body = get(url) ?: return@withContext ""
@@ -73,9 +94,11 @@ class MusicApi(
                     .build()
                 client.newCall(req).execute().use { r ->
                     if (r.isSuccessful) return r.body?.string()
+                    Log.w(TAG, "http ${r.code} on $url")
                 }
             } catch (e: Exception) {
                 last = e
+                Log.w(TAG, "net err: ${e.message}")
                 Thread.sleep(1200L * (i + 1))
             }
         }
@@ -86,6 +109,7 @@ class MusicApi(
     private fun enc(s: String) = java.net.URLEncoder.encode(s, "UTF-8")
 
     companion object {
+        private const val TAG = "MusicApi"
         const val UA = "Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Mobile Safari/537.36"
     }
 }

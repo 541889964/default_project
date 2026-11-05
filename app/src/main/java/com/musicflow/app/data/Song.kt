@@ -4,7 +4,6 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /** 搜索结果中的一首歌 */
-@Serializable
 data class Song(
     val id: String,
     val name: String,
@@ -14,7 +13,6 @@ data class Song(
 )
 
 /** 取直链结果 */
-@Serializable
 data class AudioUrl(
     val url: String,
     val br: Int = 0,
@@ -22,6 +20,7 @@ data class AudioUrl(
     val ext: String = "mp3"
 )
 
+/** 搜索接口单条原始数据（服务端返回的是 JSON 数组） */
 @Serializable
 internal data class RawSong(
     val id: String = "",
@@ -31,13 +30,7 @@ internal data class RawSong(
     val source: String = "netease"
 )
 
-@Serializable
-internal data class SearchResponse(
-    val total: Int = 0,
-    val songs: List<RawSong> = emptyList(),
-    val error: String? = null
-)
-
+/** 直链接口返回体 */
 @Serializable
 internal data class UrlResponse(
     val url: String = "",
