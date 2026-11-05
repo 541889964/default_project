@@ -117,7 +117,8 @@ fun MusicFlowRoot(vm: HomeViewModel = viewModel()) {
                         onPlay = { vm.preview(it) },
                         onDownload = { vm.download(it) },
                         onFavorite = { vm.toggleFavorite(it) },
-                        onLyric = { vm.loadLyric(it); showLyric = true }
+                        onLyric = { vm.loadLyric(it); showLyric = true },
+                        onToggleEq = { vm.toggleEq() }
                     )
                     1 -> LocalScreen(vm, ui, playState)
                     2 -> LibraryScreen("我的收藏", favorites, playState, onClick = { vm.playFromLibrary(it) })

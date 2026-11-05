@@ -33,6 +33,7 @@ data class HomeUiState(
     val lyricText: String = "",
     val lyricLoading: Boolean = false,
     // 歌单
+    val eqEnabled: Boolean = false,
     val currentPlaylist: String = "",
     val playlistItems: List<PlaylistItem> = emptyList()
 )
@@ -209,6 +210,14 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
             playlistStore.deletePlaylist(name)
             _ui.value = _ui.value.copy(message = "已删除歌单「$name」")
         }
+    }
+
+    fun toggleEq() {
+        val on = player.toggleEqualizer()
+        _ui.value = _ui.value.copy(
+            eqEnabled = on,
+            message = if (on) "均衡器已开启" else "均衡器已关闭"
+        )
     }
 
     fun clearMessage() { _ui.value = _ui.value.copy(message = null) }
