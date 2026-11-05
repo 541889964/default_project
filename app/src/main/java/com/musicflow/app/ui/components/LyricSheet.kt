@@ -56,9 +56,8 @@ fun LyricSheet(
                     CircularProgressIndicator(color = AccentPrimary)
                 }
             } else {
-                val lines = lyric.split("
-")
-                    .map { it.replace(Regex("\[\d{1,2}:\d{1,2}(\.\d{1,3})?]"), "").trim() }
+                val lines = lyric.split("\n")
+                    .map { it.replace(Regex("\\[\\d{1,2}:\\d{1,2}(\\.\\d{1,3})?\\]"), "").trim() }
                     .filter { it.isNotEmpty() }
                 if (lines.isEmpty()) {
                     Box(Modifier.fillMaxWidth().padding(40.dp), contentAlignment = Alignment.Center) {
