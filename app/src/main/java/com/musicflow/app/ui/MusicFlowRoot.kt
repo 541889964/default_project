@@ -145,11 +145,11 @@ private fun NavItem(
     icon: androidx.compose.ui.graphics.vector.ImageVector,
     onClick: () -> Unit
 ) {
-    NavigationBarItem(
+    androidx.compose.material3.NavigationBarItem(
         selected = selected, onClick = onClick,
         icon = { Icon(icon, label, tint = if (selected) AccentPrimary else TextSecondary) },
         label = { Text(label, fontSize = 11.sp, color = if (selected) AccentPrimary else TextSecondary) },
-        colors = NavigationBarItemDefaults.colors(
+        colors = androidx.compose.material3.NavigationBarItemDefaults.colors(
             indicatorColor = AccentPrimary.copy(alpha = 0.14f),
             selectedIconColor = AccentPrimary,
             selectedTextColor = AccentPrimary

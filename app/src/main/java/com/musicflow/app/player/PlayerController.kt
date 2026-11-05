@@ -123,7 +123,7 @@ class PlayerController private constructor(context: Context) {
                     for (b in 0 until bands) {
                         val range = bandLevelRange
                         val mid = (range[0] + range[1]) / 2
-                        setBandLevel(b.toShort(), mid)
+                        setBandLevel(b.toShort(), mid.toShort())
                     }
                 }
                 eqEnabled = true
