@@ -1,18 +1,21 @@
 package com.musicflow.app.ui
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.Folder
 import androidx.compose.material.icons.rounded.QueueMusic
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -27,6 +30,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -96,7 +101,11 @@ fun MusicFlowRoot(vm: HomeViewModel = viewModel()) {
                             showLyric = true
                         }
                     )
-                    NavigationBar(containerColor = BgSurface, tonalElevation = 0.dp) {
+                    Row(
+                        Modifier.fillMaxWidth().background(BgSurface).padding(vertical = 6.dp),
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         NavItem(tab == 0, "搜索", Icons.Rounded.Search) { tab = 0 }
                         NavItem(tab == 1, "本地", Icons.Rounded.Folder) {
                             tab = 1; vm.scanLocal()
@@ -145,14 +154,16 @@ private fun NavItem(
     icon: androidx.compose.ui.graphics.vector.ImageVector,
     onClick: () -> Unit
 ) {
-    androidx.compose.material3.NavigationBarItem(
-        selected = selected, onClick = onClick,
-        icon = { Icon(icon, label, tint = if (selected) AccentPrimary else TextSecondary) },
-        label = { Text(label, fontSize = 11.sp, color = if (selected) AccentPrimary else TextSecondary) },
-        colors = androidx.compose.material3.NavigationBarItemDefaults.colors(
-            indicatorColor = AccentPrimary.copy(alpha = 0.14f),
-            selectedIconColor = AccentPrimary,
-            selectedTextColor = AccentPrimary
-        )
-    )
+    val tint = if (selected) AccentPrimary else TextSecondary
+    Column(
+        modifier = Modifier
+            .clip(RoundedCornerShape(14.dp))
+            .background(if (selected) AccentPrimary.copy(alpha = 0.14f) else Color.Transparent)
+            .clickable(onClick = onClick)
+            .padding(horizontal = 18.dp, vertical = 7.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Icon(icon, label, tint = tint)
+        Text(label, fontSize = 11.sp, color = tint, modifier = Modifier.padding(top = 2.dp))
+    }
 }
